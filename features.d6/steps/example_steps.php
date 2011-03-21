@@ -1,11 +1,12 @@
 <?php
+
 // features/steps/example_steps.php
 $steps->Given('/^that I am an anonymous user$/', function($world) {
 	global $user;
 	$user->uid == 0;
 });
 
-$steps->When('/^I look at the menu$/', function($world) {
+$steps->When('/^I look at the primary links menu$/', function($world) {
 	$world->menu = menu_tree_all_data('primary-links');	
 });
 
@@ -36,11 +37,22 @@ $steps->Given('/^that I am a logged in user$/', function($world) {
 
 $steps->When('/^I look at my blog$/', function($world) {    
     //print_r(menu_get_item('blog/1'));
-	print_r(menu_get_object('module',1,'blog/1'));
-	   
+    
+    $module = menu_get_item('blog/1');
+    
+    // Wrap into helper    
+    $module_func = $module['page_callback'];
+    $module_arg = $module['page_arguments'][0];    
+    require_once $module['file'];                   
+    $result = call_user_func($module_func,$module_arg);
+    $world->blog = $result;            
+     
 });
 
-$steps->Then('/^I should see "([^"]*)" the content$/', function($world, $arg1) {
-	// print_r($world->node);
-    // throw new \Behat\Behat\Exception\Pending();
+$steps->Then('/^I should see "([^"]*)" the content$/', function($world, $text) {
+	
+	if(strpos($world->blog,$text) === false){
+        throw new \Behat\Behat\Exception\Exception();
+    }
+    
 });

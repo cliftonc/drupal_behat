@@ -1,0 +1,3 @@
+This is an example Behat (http://behat.org) project that enables BDD for Drupal.  It only works for Drupal 6 if you are running it on PHP 5.3+, but works out of the box on D7.
+
+

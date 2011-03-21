@@ -1,20 +1,21 @@
-@content
+@content @drupal6
 Feature: I can see my content
-  In order to use the site
-  users should see a menu to
-  view some example content
+    
+  This is a long description of the test case, in reality it can contain
+  anything, but should be less than 80 characters wide as this can 
+  make it difficult to read.
 
   Scenario: Can view content menu
     Given that I am an anonymous user    
-    When I look at the menu
+    When I look at the primary links menu
     Then I should see "My Example Content" in the menu
     
   Scenario: Can view content
     Given that I am an anonymous user    
     When I look at the "My Example Content" node
-    Then I should see "Sally is Great" in the content
+    Then I should see "Not this content" in the content
    
-  @blog 
+  @blog
   Scenario: Can view my blog
     Given that I am a logged in user    
     When I look at my blog
