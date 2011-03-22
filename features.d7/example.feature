@@ -14,5 +14,11 @@ Feature: I can see my content
     Given that I am an anonymous user    
     When I look at the "node/6" node
     Then I should see "Not this content" in the content
-   
+  
+  @blog
+  Scenario: Can view my blog
+    Given that I am a logged in user    
+    When I look at my blog
+    Then I should see "blog" the content
         
+  
