@@ -36,25 +36,31 @@ $steps->Given('/^that I am a logged in user$/', function($world) {
 });
 
 $steps->When('/^I look at my blog$/', function($world) {    
-    print_r(menu_get_item('blog/1'));
     
     $module = menu_get_item('blog/1');
         
     // Wrap into helper    
     $module_func = $module['page_callback'];
-
-    print_r($module_func);
+    
+    
+    
     $module_arg = $module['page_arguments'][0];    
     require_once $module['include_file'];                   
     $result = $module_func($module_arg);   // Check D7 code
-    $world->blog = $result;
-     
+    $world->blog = $result['nodes'][7]['body']['#object']->body['en'][0]['value'];
+
+    print($world->blog);
+    
 });
 
 $steps->Then('/^I should see "([^"]*)" the content$/', function($world, $text) {
 	
-	if(strpos($world->blog,$text) === false){
-        throw new \Behat\Behat\Exception\Exception();
+    if(is_string($world->blog)) {
+       if(strpos($world->blog,$text) === false){
+         throw new \Behat\Behat\Exception\Exception();
+        }
+    } else {
+         throw new \Behat\Behat\Exception\Exception();
     }
     
 });

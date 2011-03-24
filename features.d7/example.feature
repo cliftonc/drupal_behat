@@ -19,6 +19,6 @@ Feature: I can see my content
   Scenario: Can view my blog
     Given that I am a logged in user    
     When I look at my blog
-    Then I should see "blog" the content
+    Then I should see "test entry" the content
         
   

@@ -36,7 +36,6 @@ $steps->Given('/^that I am a logged in user$/', function($world) {
 });
 
 $steps->When('/^I look at my blog$/', function($world) {    
-    //print_r(menu_get_item('blog/1'));
     
     $module = menu_get_item('blog/1');
     
@@ -45,14 +44,19 @@ $steps->When('/^I look at my blog$/', function($world) {
     $module_arg = $module['page_arguments'][0];    
     require_once $module['file'];                   
     $result = call_user_func($module_func,$module_arg);
+    
     $world->blog = $result;            
      
 });
 
 $steps->Then('/^I should see "([^"]*)" the content$/', function($world, $text) {
 	
-	if(strpos($world->blog,$text) === false){
-        throw new \Behat\Behat\Exception\Exception();
-    }
+	if(is_string($world->blog)) {
+	   if(strpos($world->blog,$text) === false){
+         throw new \Behat\Behat\Exception\Exception();
+        }
+	} else {
+		 throw new \Behat\Behat\Exception\Exception();
+	}
     
 });
