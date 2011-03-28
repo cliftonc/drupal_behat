@@ -1,65 +1,42 @@
 <?php
 
 // features/steps/example_steps.php
-$steps->Given('/^that I am an anonymous user$/', function($world) {
-	global $user;
-	$user->uid == 0;
+$steps->Given('/^that I am an anonymous user$/', function($world) {     
+    bdd_drupal_set_user(BDD_DRUPAL_ANONYMOUS); 
+});
+
+
+$steps->Given('/^that I am a logged in user$/', function($world) {
+    bdd_drupal_set_user(BDD_DRUPAL_ADMIN);
 });
 
 $steps->When('/^I look at the primary links menu$/', function($world) {
-	$world->menu = menu_tree_all_data('main-menu');
+	$world->menu = bdd_drupal_get_menu('main-menu'); 	
 });
 
-$steps->Then('/^I should see "([^"]*)" in the menu$/', function($world, $title) {    	
-	$found = false;	
-	foreach ($world->menu as $menuitem) {
-		if($menuitem['link']['title'] == $title) $found = true;    
-	}	
-	if(!$found) {
+$steps->Then('/^I should see "([^"]*)" in the menu$/', function($world, $title) {    		
+	if(!bdd_drupal_is_in_menu($title,$world->menu)) {
 	   throw new \Behat\Behat\Exception\Exception();
 	}
 });
 
 $steps->When('/^I look at the "([^"]*)" node$/', function($world, $node) {
-	$world->node = menu_get_object('node',1,$node);
+	$world->node = bdd_drupal_get_path_content($node);        
 });
 
-$steps->Then('/^I should see "([^"]*)" in the content$/', function($world, $contents) {	
-	if($world->node->body['en'][0]['value'] != $contents) {
+$steps->Then('/^I should see "([^"]*)" in the content$/', function($world, $text) {		
+	if(bdd_drupal_contains($world->node,$text) == false) {
 	   throw new \Behat\Behat\Exception\Exception();	
 	}    
 });
 
-$steps->Given('/^that I am a logged in user$/', function($world) {
-    global $user;
-    $user->uid == 1;
-});
-
-$steps->When('/^I look at my blog$/', function($world) {    
-    
-    $module = menu_get_item('blog/1');
-        
-    // Wrap into helper    
-    $module_func = $module['page_callback'];
-    
-    
-    
-    $module_arg = $module['page_arguments'][0];    
-    require_once $module['include_file'];                   
-    $result = $module_func($module_arg);   // Check D7 code
-    $world->blog = $result['nodes'][7]['body']['#object']->body['en'][0]['value'];
-
-    print($world->blog);
-    
+$steps->When('/^I look at my blog$/', function($world) {        		      	  
+   	$world->blog = bdd_drupal_get_path_content('blog/1');   	  
 });
 
 $steps->Then('/^I should see "([^"]*)" the content$/', function($world, $text) {
 	
-    if(is_string($world->blog)) {
-       if(strpos($world->blog,$text) === false){
-         throw new \Behat\Behat\Exception\Exception();
-        }
-    } else {
+    if(bdd_drupal_contains($world->blog,$text) == false){         
          throw new \Behat\Behat\Exception\Exception();
     }
     

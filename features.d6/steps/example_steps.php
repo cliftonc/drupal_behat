@@ -2,12 +2,11 @@
 
 // features/steps/example_steps.php
 $steps->Given('/^that I am an anonymous user$/', function($world) {
-	global $user;
-	$user->uid == 0;
+    bdd_drupal_set_user(BDD_DRUPAL_ANONYMOUS); 	
 });
 
 $steps->When('/^I look at the primary links menu$/', function($world) {
-	$world->menu = menu_tree_all_data('primary-links');	
+	$world->menu = bdd_drupal_get_menu('primary-links');    	
 });
 
 $steps->Then('/^I should see "([^"]*)" in the menu$/', function($world, $title) {    	
@@ -31,21 +30,31 @@ $steps->Then('/^I should see "([^"]*)" in the content$/', function($world, $cont
 });
 
 $steps->Given('/^that I am a logged in user$/', function($world) {
-    global $user;
-    $user->uid == 1;
+    bdd_drupal_set_user(BDD_DRUPAL_ADMIN);	
 });
 
 $steps->When('/^I look at my blog$/', function($world) {    
     
     $module = menu_get_item('blog/1');
-    
+
+    // print_r($module);
     // Wrap into helper    
     $module_func = $module['page_callback'];
-    $module_arg = $module['page_arguments'][0];    
-    require_once $module['file'];                   
-    $result = call_user_func($module_func,$module_arg);
+    $module_arg = $module['page_arguments'][0];
     
-    $world->blog = $result;            
+    print_r("HERE");
+    
+    require_once $module['file'];               
+    
+    
+    print_r("HERE");
+    
+    
+    $result = $module_func($module_arg);        
+    
+    print_r("HERE");
+        
+    // $world->blog = $result;            
      
 });
 
