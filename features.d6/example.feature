@@ -12,7 +12,7 @@ Feature: I can see my content
     
   Scenario: Can view content
     Given that I am an anonymous user    
-    When I look at the "My Example Content" node
+    When I look at the "node/1" node
     Then I should see "Not this content" in the content
    
   @blog

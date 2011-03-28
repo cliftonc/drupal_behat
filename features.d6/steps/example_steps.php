@@ -10,23 +10,19 @@ $steps->When('/^I look at the primary links menu$/', function($world) {
 });
 
 $steps->Then('/^I should see "([^"]*)" in the menu$/', function($world, $title) {    	
-	$found = false;	
-	foreach ($world->menu as $menuitem) {
-		if($menuitem['link']['title'] == $title) $found = true;    
-	}	
-	if(!$found) {
-	   throw new \Behat\Behat\Exception\Exception();
-	}
+    if(!bdd_drupal_is_in_menu($title,$world->menu)) {
+       throw new \Behat\Behat\Exception\Exception();
+    }
 });
 
 $steps->When('/^I look at the "([^"]*)" node$/', function($world, $node) {
-	$world->node = menu_get_object('node',1,'node/1');	
+    $world->node = bdd_drupal_get_path_content($node);        
 });
 
-$steps->Then('/^I should see "([^"]*)" in the content$/', function($world, $contents) {	
-	if($world->node->body != $contents) {
-	   throw new \Behat\Behat\Exception\Exception();	
-	}    
+$steps->Then('/^I should see "([^"]*)" in the content$/', function($world, $text) {	
+	if(bdd_drupal_contains($world->node,$text) == false) {
+       throw new \Behat\Behat\Exception\Exception();    
+    }    
 });
 
 $steps->Given('/^that I am a logged in user$/', function($world) {
@@ -34,38 +30,15 @@ $steps->Given('/^that I am a logged in user$/', function($world) {
 });
 
 $steps->When('/^I look at my blog$/', function($world) {    
-    
-    $module = menu_get_item('blog/1');
 
-    // print_r($module);
-    // Wrap into helper    
-    $module_func = $module['page_callback'];
-    $module_arg = $module['page_arguments'][0];
-    
-    print_r("HERE");
-    
-    require_once $module['file'];               
-    
-    
-    print_r("HERE");
-    
-    
-    $result = $module_func($module_arg);        
-    
-    print_r("HERE");
-        
-    // $world->blog = $result;            
+	$world->blog = bdd_drupal_get_path_content('blog/1');                
      
 });
 
 $steps->Then('/^I should see "([^"]*)" the content$/', function($world, $text) {
 	
-	if(is_string($world->blog)) {
-	   if(strpos($world->blog,$text) === false){
+    if(bdd_drupal_contains($world->blog,$text) == false){         
          throw new \Behat\Behat\Exception\Exception();
-        }
-	} else {
-		 throw new \Behat\Behat\Exception\Exception();
-	}
+    }
     
 });

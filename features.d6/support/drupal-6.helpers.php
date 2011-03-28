@@ -56,7 +56,9 @@ function bdd_drupal_get_node_at_path($path) {
 function bdd_drupal_get_path_content($path) {
 
 	$returnValue = "";
+	
 	$item = menu_get_item($path);	
+	
     $callback = $item['page_callback'];   
         
     if($callback) {
@@ -70,8 +72,8 @@ function bdd_drupal_get_path_content($path) {
         }                   
         
         // Call callback
-        $result = $callback($callback_arg);   // Check D7 code                    
-        print("RESULT: " . $result);
+        $result = $callback($callback_arg);   // Check D7 code
+        
         $returnValue = $result;
                 
     } 
